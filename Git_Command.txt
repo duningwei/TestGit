@@ -1,0 +1,75 @@
+参考git 配置关联Github http://www.mamicode.com/info-detail-1432571.html
+
+0. 初始化git仓库    git init    将目录变成可管理的仓库
+1. 将文件添加到仓库    git add 文件名    也就是将文件放到暂存区
+	git add -A  提交所有变化
+	git add -u  提交被修改(modified)和被删除(deleted)文件，不包括新文件(new)
+	git add .  提交新文件(new)和被修改(modified)文件，不包括被删除(deleted)文件
+
+2. 将文件提交到仓库    git commit -m "本次提交的说明"    将文件提交到当前分支
+	                  git commit -a -m"first commit"  可以不用再先使用git add 添加暂存区
+
+3. 查看当前仓库的状态 git status 可以查看文件是否被改动
+4. 查看被修改文件的内容 git diff 文件名
+5. 查看提交记录        git log     
+   简单查看 git log --pretty=oneline
+
+6. 退回上一个版本 git reset --hard HEAD^    
+                 (注： HEAD^ 指上一个版本 ; HEAD^^ 指上上个版本)
+                 git reset --hard HEAD~ 或者 git reset --hard HEAD~1  (~ 后面的数字表示回退几次提交，默认是一次)
+
+7. 返回指定版本        git reset -- hard 版本号(前几位就好)
+8. 查看历史命令        git reflog
+9. 查看工作区和版本库的最新版本的区别 git diff HEAD -- 文件名
+10. 取消工作区的修改 git checkout -- 文件名    其实是用版本库里的版本替换工作区的版本
+    例子: 当你删除了工作区的一个文件,你可以通过这个命令将版本库里面的文件下载到工作区
+11. 取消暂存区的修改    git reset head 文件名
+12. 关联远程库    git remote add origin git@github-name:（github用户名）/远程库名.git
+13. 第一次推送master分支    git push -u origin master  将本地库的所有内容推送到远处库上
+14. 此后,本地提交到远程库    git push origin master    推送最新修改
+15. 克隆远程库    git clone git@github.com:github用户名/远程库名.git
+16. 查看分支    git branch
+17. 创建分支    git branch 分支名
+18. 切换分组    git checkout 分支名
+19. 创建并切换到当前分支    git checkout -b 分支名
+20. 合并分支到当前分支    git merge 分支名
+21. 删除分支    git branch -d 分支名
+22. 将远程文件下载到本地 git pull  只能下载被修改过的文件
+23. 删除远程文件 git rm 文件
+ 
+24. 上传至远程仓库 git push origin master
+在执行推送时候报错：
+错误如下：
+git push origin master
+ssh: Could not resolve hostname ssh.github.com: Name or service not known
+fatal: Could not read from remote repository.Please make sure you have the correct access rights
+and the repository exists.
+
+
+# 撤销工作区中当前目录中的所有更改
+git checkout .
+# 撤销工作区中指定文件的修改
+git checkout -- filename
+
+git初始化账户|密码
+	git config --list
+	git config --global user.email '1063263584@qq.com'
+	git config --global user.name 'duningwei'
+
+生成ssh秘钥
+
+	随便找一个目录，右击 git bash（前提你要安装过github for windows），生成ssh key秘钥
+	ssh-keygen -t rsa -C "1063263584@qq.com"
+		如果成功的话，会在~/ 目录下创建 .ssh 目录
+		进入~/.ssh/目录 vim  id_rsa.pub 。将 id_rsa.pub的内容copy
+
+通过命令行 创建远程仓库 
+	git init
+	git add README.md
+	git commit -m "first commit"
+	git remote add origin git@github.com:duningwei/TestGit.git
+	git push -u origin master
+
+直接关联已创建的github 库
+	git remote add origin git@github.com:duningwei/TestGit.git
+	git push -u origin master
