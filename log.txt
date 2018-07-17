@@ -1,0 +1,14 @@
+07-17 10:17:36.525 18087-19066/? E/AndroidRuntime: FATAL EXCEPTION: SignalCollect
+                                                   Process: net.gdyuhui.wisdomcampd, PID: 18087
+                                                   java.lang.ArrayIndexOutOfBoundsException: src.length=8 srcPos=0 dst.length=15 dstPos=8 length=8
+                                                       at java.lang.System.arraycopy(Native Method)
+                                                       at java.util.ArrayList.addAll(ArrayList.java:591)
+                                                       at com.wellcell.e.j.b(Unknown Source:132)
+                                                       at com.wellcell.e.j.a(Unknown Source:0)
+                                                       at com.wellcell.Task.b.a.a(Unknown Source:2)
+                                                       at com.Signal.Object.SignalTestObject.onSignalStrengthChanged(Unknown Source:25)
+                                                       at com.wellcell.e.d.onSignalStrengthsChanged(Unknown Source:108)
+                                                       at android.telephony.PhoneStateListener$1.handleMessage(PhoneStateListener.java:334)
+                                                       at android.os.Handler.dispatchMessage(Handler.java:108)
+                                                       at android.os.Looper.loop(Looper.java:166)
+                                                       at android.os.HandlerThread.run(HandlerThread.java:65)
