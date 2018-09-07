@@ -1,0 +1,100 @@
+node 安装及 配置webpack 
+	
+	创建基于webpack框架的环境 项目
+		1. 项目根目录 执行 npm init 
+		2. npm install webpack --save-dev 
+		   (注：如果这一步报错，说明你没有全局安装webpack，全局安装webpack的命令行是：npm install webpack -g)
+		   
+		webpack的打包功能
+			webpack hello.js hello.bundle.js  //这句命令的意思是将hello.js打包，并且打包后的文件名称为hello.bundle.js
+			(注 ：命令报错 webpack index.js -o bundle.js )
+			
+			//在打包过程中会生成一些webpack需要的require
+			
+			require('./world.js');  //要注意文件的引用路径，不然打包的时候会报错
+		3.使用webpack-dev-server 配置自动刷新
+		  1) 安装 npm install webpack-dev-server -g
+		  2) 项目根目录 在 webpack.config.js 文件配置    
+			entry:{	
+				 index_dev: './src/index.js'
+			},
+			//输出路径必须在根目录 否则无法监听源码变 刷新pc页面
+			output:{
+				filename: '[name].js',
+				path: __dirname + '/dist/'  
+			},
+			 //设置开发者工具的端口号,不设置则默认为8080端口
+			 devServer: {
+				contentBase:'./dist/',
+				inline: true,
+				port: 8181,
+				historyApiFallback:true 
+			}
+			//设置模式 生产(production)和开发(development)
+			mode: 'development' 
+		  3) 命令行启动本地服务 package.json  
+		  		...
+
+		  		 "scripts": {
+				    "dev": "webpack --mode development",
+				    "build": "webpack --mode production",
+					 "start": "webpack-dev-server --inline --content-base ."  //启动本地服务
+				  },
+				  
+			    ...
+		  4)关键的是你的index.html也就是你的项目入口的html文件里面引用这个bundle.js文件需要直接引用根目录下面的！
+
+			<body>
+				<div id="app"></div>
+				<script type="text/javascript" src="bundle.js"></script>
+			</body>
+			不能引用你webpack配置的bundle.js文件目录，webpack配置的这个bundle.js文件，只有在你手动打包webpack之后才会改变！
+
+
+注： 1.webpack 安装后  输入webpack -h 失败   并提示安装webpack-cli/webpack-command  
+	   安装webpack命令：npm install webpack -g
+	   
+	  解决：使用命令 npm install webpack-cli -g  全局安装webpack-cli
+		
+     2. 使用webpack 打包出现错误
+	 
+		   WARNING in configuration The ‘mode‘ option has not been set. Set ‘mode‘ option to ‘development‘ or ‘ ....
+		
+		解决：在项目根目录  执行 npm init  生成package.json  
+		去除警告方式1：
+		{
+		  "name": "testwebpack",
+		  "version": "1.0.0",
+		  "description": "",
+		  "main": "index.js",
+		 "scripts": {  
+			"test": "echo \"Error: no test specified\" && exit 1"  
+		  },  
+		  #此段解决警告问题start
+		  "scripts": {  
+			  "dev": "webpack --mode development",  
+			  "build": "webpack --mode production"  
+		  },  
+		  #此段解决警告问题end
+		  "author": "",
+		  "license": "ISC"
+		}
+		
+		开发模式 npm run dev (相当于 webpack --mode development )
+		生产模式 npm run build(相当于 webpack --mode production)
+		
+		去除警告方式2：
+		   webpack --mode development
+		   webpack --mode production
+		
+	3.使用webpack 命令 出现错误ERROR in Entry module not found: Error: Can't resolve './src' in 
+	
+		错误原因是webpack入口默认为src/index.js  进入webpack-test文件夹新建文件夹 src，进入src文件新建index.js
+		
+		
+		
+附录参考
+		webpack中文官网参考	https://www.webpackjs.com/concepts/
+		webpack 新手入门 https://blog.csdn.net/qq_39207948/article/details/79436644
+		webpack-dev-server自动刷新失败 https://www.cnblogs.com/llauser/p/6795428.html
+		

@@ -8,6 +8,8 @@
 
 2. 将文件提交到仓库    git commit -m "本次提交的说明"    将文件提交到当前分支
 	                  git commit -a -m"first commit"  可以不用再先使用git add 添加暂存区
+					 
+					 git commit --amend	取消提交
 
 3. 查看当前仓库的状态 git status 可以查看文件是否被改动
 4. 查看被修改文件的内容 git diff 文件名
@@ -59,11 +61,11 @@ git初始化账户|密码
 生成ssh秘钥
 
 	随便找一个目录，右击 git bash（前提你要安装过github for windows），生成ssh key秘钥
-	ssh-keygen -t rsa -C "1063263584@qq.com"
+	ssh -keygen -t rsa -C "1063263584@qq.com"
 		如果成功的话，会在~/ 目录下创建 .ssh 目录
 		进入~/.ssh/目录 vim  id_rsa.pub 。将 id_rsa.pub的内容copy
 
-通过命令行 创建远程仓库 
+通过命令行 创建远程仓库 (码云账户地址: git@gitee.com:dunw/CordovaHello.git)
 	git init
 	git add README.md
 	git commit -m "first commit"
@@ -72,4 +74,32 @@ git初始化账户|密码
 
 直接关联已创建的github 库
 	git remote add origin git@github.com:duningwei/TestGit.git
-	git push -u origin master
+	git push -u origin master、
+	
+注：执行 git remote add origin git@gitee.com:dunw/CordovaHello.git
+    提示出错信息：fatal: remote origin already exists.
+		解决办法如下：
+		1、先输入$ git remote rm origin
+		2、再输入$ git remote add origin git@github.com:djqiang/gitdemo.git 就不会报错了！
+
+
+	
+//打包任务
+task makeJar(type: Copy) {
+
+    delete 'build/libs/demo.jar'
+    delete 'libs/demo.jar'
+    //从哪里打包class文件
+    from('build/intermediates/')
+    //打包到jar后的目录结构
+    into('build/libs/')
+    include('classes.jar')
+    //去掉不需要打包的目录和文件
+    exclude('BuildConfig.class', 'R.class')
+    //去掉R$开头的文件
+    exclude{ it.name.startsWith('R$')}
+
+    rename ('classes.jar','demo.jar')
+}
+
+makeJar.dependsOn(build)

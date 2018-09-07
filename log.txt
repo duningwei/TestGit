@@ -12,3 +12,7 @@
                                                        at android.os.Handler.dispatchMessage(Handler.java:108)
                                                        at android.os.Looper.loop(Looper.java:166)
                                                        at android.os.HandlerThread.run(HandlerThread.java:65)
+													   
+													   
+https://www.cnblogs.com/yanghaizhou/p/5269899.html
+

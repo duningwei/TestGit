@@ -1,0 +1,102 @@
+	
+
+配置tomcat环境
+  1.安装jdk 
+   getconf LONG_BIT   查看linux系统位数
+   etc/profile  系统环境配置文件  新添环境变量(刷新命令)：source profile  
+   
+  2.解决vm中tomcat开启,本机通过 IP:port 无法访问（参考：https://www.cnblogs.com/zongfa/p/7967935.html）
+	linux防火墙没有开放port 
+	(1)第一种解决方法是关闭虚拟机中的防火墙服务。桌面--管理--安全级别与防火墙，将防火墙设置为：disable即可。或用root登录后，执行
+		  service iptables stop --停止
+		  service iptables start --启动
+	(2)局部端口的开发 
+		  命令;
+		  1)添加开放端口
+		  iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+		  iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+				-A 参数就看成是添加一条 INPUT 的规则
+				-p 指定是什么协议 我们常用的tcp 协议，当然也有udp 例如53端口的DNS
+				到时我们要配置DNS用到53端口 大家就会发现使用udp协议的
+				而 --dport 就是目标端口 当数据从外部进入服务器为目标端口
+				反之 数据从服务器出去 则为数据源端口 使用 --sport
+				-j 就是指定是 ACCEPT 接收 或者 DROP 不接收
+		  查看下 iptables -L -n 是否添加上去
+		  service iptables save
+		  2)上步重启防火墙仍无法访问 则执行下面步骤(参考；https://blog.csdn.net/lgh1117/article/details/48321717)
+		  修改Linux系统防火墙配置需要修改 /etc/sysconfig/iptables 这个文件，
+			用vi打开 /etc/sysconfig/iptables
+			打开防火前通过端口:
+			-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+			此行必须放在
+			-A INPUT -j REJECT --reject-with icmp-host-prohibited
+			-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+			这两行的前面，否则一样无效。
+			编辑好防火墙，重启防火墙服务：
+			service iptables restart
+ 
+		
+ 
+ 
+ Centos 设置IP地址的几种方式  （参考：https://www.cnblogs.com/blueskylcc/p/5718507.html）
+
+	查看IP地址
+		登陆连接centos系统，输入 ifconfig 可以查看到当前本机的IP地址信息
+
+	临时设置IP地址
+		1、如本机为例，上面查询IP改为1.117，输入 ifconfig eth0 （默认是第一个网卡） 后面接IP地址， 网络掩码和网关，如果不设置，就使用默认的掩码
+
+		如： ipconfig ethx ipadd netmask x.x.x.x
+
+		其中 ethx 中 x 代表第几块以太网卡，默认第一块为 0，ipadd 代表 ip 地址。x.x.x..x 为子网掩码。
+
+		2、再次查看IP就已经变成新的IP地址了
+
+		注意这种方法修改只是临时修改，重启网卡或服务器后又会还原
+
+	设置/修改IP地址
+		1、如果要让IP地址永久生效，需要编辑网卡配置文件
+
+		使用VI编辑器设置，如 vi /etc/sysconfig/network-scripts/ifcfg-eth0
+		说明一下这个文件：
+
+		DEVICE=eth0  网卡对应的设备别名，如ifcfg-eth0第一块网卡
+		BOOTPROTO=  static 网卡获得ip地址的方式，
+				   （ 可选参数 ：static（静态 ip地址）；dhcp（通过dhcp协议获取ip）；bootip（通过bootp协议获得的ip地址））
+		BROADCAST=192.168.0.255         子网广播地址
+		GATEWAY=192.168.1.1        默认网关
+		HWADDR=00:50:56:8E:47:EE        网卡物理地址
+		IPADDR=192.168.1.117             网卡IP地址
+		IPV6INIT=no                     是否启用IPV6
+		IPV6_AUTOCONF=no
+		NETMASK=255.255.255.0           网卡对应网络掩码
+		NETWORK=192.168.1.0             网卡对应的网络地址
+		ONBOOT=yes           系统启动时是否设置此网络接口，设置为yes时，系统启动时激活此设备。默认设置为yes
+		至于后面的 TYPE 和UUID这个就不用管了，这是网卡的类型
+
+		2、使用vi编辑器， 按 insert键插入，进入编辑模式
+		3、将光标移动到 IPADDR 设置部分，改成需要设置的IP地址，
+
+			如本例中改成 1.118. 按下esc 键。
+			输入 冒号：wq 保存退出
+			会提示 "/etc/sysconfig/network-scripts/ifcfg-eth0" 14L, 302C written
+
+		4、设置好之后，把网络服务重启一下，如下图2个命令均可以  service network restart 或者  /etc/init.d/network restart
+
+
+	图形界面操作
+	1、netconfig 命令
+
+	编辑网卡设置， 或者使用 netconfig命令进入图形界面设置
+	设置之后，如果需要IP生效。同样需要重启网络服务，或者重启电脑
+	2、neat 命令
+
+	Neat 命令 = redhat-config-network 图形下配置IP地址
+
+	在VirtualBox中设置网卡连接方式：点“设置”，在弹出的界面中点“网络”，最后选择“连接方式”为“桥接网卡”—> 开启服务 vi /etc/sysconfig/network-scripts/ifcfg-eth0 中   ONBOOT=yes –> 重启网络服务 service network restart
+
+
+
+
+
+
